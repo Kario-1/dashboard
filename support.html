@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>الدعم الفني</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="styleconversation.css" />
+</head>
+<body>
+   <div class="container">
+      <aside id="sidebar">
+        <div class="navigation">
+          <div class="top-list">
+            <div class="logo">
+              <img
+                src="images/WhatsApp Image 2025-05-23 at 23.12.01_0870f7e4.jpg"
+                alt="شعار"
+              />
+            </div>
+            <div id="toggleBtn">
+              <i class="fas fa-bars"></i>
+            </div>
+          </div>
+          <div class="sidebar-menu">
+            <ul>
+              <li class="list">
+                <a href="index.html">
+                  <span class="icon"><i class="fa-solid fa-user-tie"></i></span>
+                  <span class="title">Admin</span>
+                </a>
+              </li>
+              <li class="list">
+                <a href="model.html">
+                  <span class="icon"><i class="fa-solid fa-comment"></i></span>
+                  <span class="title">Model</span>
+                </a>
+              </li>
+              <li class="list">
+                <a href="order.html">
+                  <span class="icon"><i class="fa-solid fa-box"></i></span>
+                  <span class="title">Orders</span>
+                </a>
+              <li class="list">
+                <a href="Withdrawal.html">
+                  <span class="icon"><i class="fas fa-money-check-alt"></i></span>
+                  <span class="title">Withdrawal</span>
+                </a>
+              </li>
+                <li class="list active">
+                  <a href="support.html">
+                      <span class="icon"><i class="fas fa-headset"></i></span>
+                      <span class="title">support</span>
+                  </a>
+              </li>
+              </li>
+              <li class="list">
+                <a href="login.html">
+                  <span class="icon"
+                    ><i class="fa-solid fa-right-from-bracket"></i
+                  ></span>
+                  <span class="title">Log out</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+        
+               <main id="chat-area">
+            <div class="chat-header">
+                <div class="avatar">م</div>
+                <div class="user-status">
+                    <h4>محمد أحمد</h4>
+                    <div class="status online">متصل الآن</div>
+                </div>
+                <div class="chat-actions">
+                    <i class="fas fa-phone-alt"></i>
+                    <i class="fas fa-video"></i>
+                    <i class="fas fa-info-circle"></i>
+                </div>
+            </div>
+            
+            <div class="chat-messages">
+                <div class="message received">
+                    <p>مرحبًا، لدي مشكلة في طلبي الأخير</p>
+                    <div class="message-time">10:30 ص</div>
+                </div>
+                
+                <div class="message sent">
+                    <p>مرحبًا محمد، كيف يمكنني مساعدتك؟</p>
+                    <div class="message-time">10:32 ص</div>
+                </div>
+                
+                <div class="message received">
+                    <p>لقد تلقيت المنتج ولكن به عيب في التصنيع</p>
+                    <div class="message-time">10:33 ص</div>
+                </div>
+                
+                <div class="message sent">
+                    <p>أنا آسف لذلك. هل يمكنك إرسال صورة للعيب؟</p>
+                    <div class="message-time">10:34 ص</div>
+                </div>
+                
+                <div class="message received">
+                    <p>نعم بالطبع، سأرسلها الآن</p>
+                    <div class="message-time">10:35 ص</div>
+                </div>
+            </div>
+            
+            <div class="chat-input">
+                <input type="text" placeholder="اكتب رسالتك هنا...">
+                <button><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </main>
+
+
+        <aside id="conversation-bar">
+            <div class="conversation-header">
+                <h3>المحادثات</h3>
+                <button class="conversation-toggle" id="closeConversationBar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="search-box">
+                <input type="text" placeholder="ابحث عن محادثة...">
+            </div>
+            
+            <div class="conversation-category">
+                <h4>المستخدمون</h4>
+                <div class="conversation-item active">
+                    <div class="avatar">م</div>
+                    <div class="user-info">
+                        <h5>محمد أحمد</h5>
+                        <p>لقد تلقيت المنتج ولكن به عيب في التصنيع</p>
+                    </div>
+                    <div class="time-unread">
+                        <div class="time">10:35</div>
+                        <div class="unread-count">3</div>
+                    </div>
+                </div>
+                
+                <div class="conversation-item">
+                    <div class="avatar">س</div>
+                    <div class="user-info">
+                        <h5>سارة محمد</h5>
+                        <p>هل يمكنني تغيير عنوان الشحن؟</p>
+                    </div>
+                    <div class="time-unread">
+                        <div class="time">أمس</div>
+                    </div>
+                </div>
+                
+                <div class="conversation-item">
+                    <div class="avatar">ع</div>
+                    <div class="user-info">
+                        <h5>علي خالد</h5>
+                        <p>شكرًا على المساعدة!</p>
+                    </div>
+                    <div class="time-unread">
+                        <div class="time">أمس</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="conversation-category">
+                <h4>المحامون</h4>
+                <div class="conversation-item">
+                    <div class="avatar">ح</div>
+                    <div class="user-info">
+                        <h5>حسن محمود</h5>
+                        <p>سأراجع المستندات وأرد عليك</p>
+                    </div>
+                    <div class="time-unread">
+                        <div class="time">22/05</div>
+                    </div>
+                </div>
+                
+                <div class="conversation-item">
+                    <div class="avatar">ن</div>
+                    <div class="user-info">
+                        <h5>نورا الفهد</h5>
+                        <p>هل يمكننا تحديد موعد للاجتماع؟</p>
+                    </div>
+                    <div class="time-unread">
+                        <div class="time">20/05</div>
+                        <div class="unread-count">1</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="conversation-category">
+                <h4>الشركات</h4>
+                <div class="conversation-item">
+                    <div class="avatar">ش</div>
+                    <div class="user-info">
+                        <h5>شركة التقنية</h5>
+                        <p>طلبكم قيد المعالجة</p>
+                    </div>
+                    <div class="time-unread">
+                        <div class="time">18/05</div>
+                    </div>
+                </div>
+                
+                <div class="conversation-item">
+                    <div class="avatar">ت</div>
+                    <div class="user-info">
+                        <h5>تكنو سيرفيس</h5>
+                        <p>نود تجديد العقد</p>
+                    </div>
+                    <div class="time-unread">
+                        <div class="time">15/05</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <button class="conversation-toggle" id="openConversationBar">
+        <i class="fas fa-comments"></i>
+    </button>
+    </div>
+    <script src="script.js"></script>
+    <script>
+        // Toggle sidebar
+        document.getElementById('toggleBtn').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        });
+        
+        // Toggle conversation bar on mobile
+        document.getElementById('openConversationBar').addEventListener('click', function() {
+            document.getElementById('conversation-bar').classList.add('active');
+        });
+        
+        document.getElementById('closeConversationBar').addEventListener('click', function() {
+            document.getElementById('conversation-bar').classList.remove('active');
+        });
+        
+        // Select conversation
+        const conversationItems = document.querySelectorAll('.conversation-item');
+        conversationItems.forEach(item => {
+            item.addEventListener('click', function() {
+                conversationItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update chat header
+                const userName = this.querySelector('h5').textContent;
+                document.querySelector('.user-status h4').textContent = userName;
+                
+                // Simulate chat messages
+                const messagesContainer = document.querySelector('.chat-messages');
+                messagesContainer.innerHTML = '';
+                
+                // Add sample messages
+                const messages = [
+                    { text: `مرحبًا، لدي استفسار بخصوص ${userName}`, sent: false, time: '10:30 ص' },
+                    { text: 'مرحبًا، كيف يمكنني مساعدتك؟', sent: true, time: '10:32 ص' },
+                    { text: 'شكرًا على التواصل مع الدعم الفني', sent: true, time: '10:33 ص' }
+                ];
+                
+                messages.forEach(msg => {
+                    const messageEl = document.createElement('div');
+                    messageEl.classList.add('message');
+                    messageEl.classList.add(msg.sent ? 'sent' : 'received');
+                    messageEl.innerHTML = `
+                        <p>${msg.text}</p>
+                        <div class="message-time">${msg.time}</div>
+                    `;
+                    messagesContainer.appendChild(messageEl);
+                });
+                
+                // Scroll to bottom
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                
+                // Close conversation bar on mobile
+                if (window.innerWidth < 768) {
+                    document.getElementById('conversation-bar').classList.remove('active');
+                }
+            });
+        });
+        
+        // Send message
+        document.querySelector('.chat-input button').addEventListener('click', function() {
+            const input = document.querySelector('.chat-input input');
+            const message = input.value.trim();
+            
+            if (message) {
+                const messagesContainer = document.querySelector('.chat-messages');
+                const now = new Date();
+                const timeString = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+                
+                const messageEl = document.createElement('div');
+                messageEl.classList.add('message', 'sent');
+                messageEl.innerHTML = `
+                    <p>${message}</p>
+                    <div class="message-time">${timeString}</div>
+                `;
+                messagesContainer.appendChild(messageEl);
+                
+                // Clear input
+                input.value = '';
+                
+                // Scroll to bottom
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        });
+        
+        // Also send on Enter key
+        document.querySelector('.chat-input input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.querySelector('.chat-input button').click();
+            }
+        });
+        
+        // Initialize scroll position
+        const messagesContainer = document.querySelector('.chat-messages');
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    </script>
+    <script src="script.js"></script> 
+</body>
+</html>
