@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>الدعم الفني</title>
+    <meta name="msapplication-navbutton-color" content="#2196F3" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#2196F3" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="support_chat.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container">
+      <!-- الشريط الجانبي الأيسر (على اليمين في RTL) -->
+     <aside id="sidebar">
+        <div class="navigation">
+          <div class="top-list">
+            <div class="logo">
+              <img
+                src="images/WhatsApp Image 2025-05-23 at 23.12.01_0870f7e4.jpg"
+                alt="شعار"
+              />
+            </div>
+            <div id="toggleBtn">
+              <i class="fas fa-bars"></i>
+            </div>
+          </div>
+          <div class="sidebar-menu">
+            <ul>
+              <li class="list active">
+                <a href="dashboard.html">
+                  <span class="icon"
+                    ><i class="fa-solid fa-user-tie"></i
+                  ></span>
+                  <span class="title">الادمن</span>
+                </a>
+              </li>
+              <li class="list">
+                <a href="model.html">
+                  <span class="icon"
+                    ><i class="fa-solid fa-comment"></i
+                  ></span>
+                  <span class="title">المودل</span>
+                </a>
+              </li>
+              <li class="list">
+                <a href="order.html">
+                  <span class="icon"><i class="fa-solid fa-box"></i></span>
+                  <span class="title">الطلبات</span>
+                </a>
+              </li>
+              <li class="list">
+                <a href="Withdrawal.html">
+                  <span class="icon"><i class="fas fa-money-check-alt"></i></span>
+                  <span class="title">السحب</span>
+                </a>
+              </li>
+              <li class="list">
+                <a href="support.html">
+                  <span class="icon"><i class="fas fa-headset"></i></span>
+                  <span class="title">الدعم</span>
+                </a>
+              </li>
+              <li class="list">
+                <a href="index.html">
+                  <span class="icon"
+                    ><i class="fa-solid fa-right-from-bracket"></i
+                  ></span>
+                  <span class="title">الخروج</span>
+                </a>
+              </li>
+              <li class="list" id="openConversationSidebar">
+                <a href="#">
+                  <span class="icon"><i class="fas fa-comment-dots"></i></span>
+                  <span class="title">المحادثات</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+
+      <!-- شريط المحادثات الجانبي الأيمن (على اليسار من السايدبار الأيسر في RTL) -->
+      <aside id="conversation-bar">
+        <div class="resize-handle"></div> <!-- مقبض تغيير الحجم -->
+        <div class="conversation-header">
+          <h3>المحادثات</h3>
+          <div class="conversation-controls">
+            <button class="conversation-toggle" id="closeConversationBar" title="إغلاق شريط المحادثات">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        <div class="search-box">
+          <input type="text" id="conversationSearchInput" placeholder="ابحث عن محادثة...">
+          <button id="searchChatsButton" class="search-btn" title="بحث"><i class="fas fa-search"></i></button>
+        </div>
+        <button id="toggleEndedChatsButton" class="toggle-ended-chats-btn">
+          <i class="fas fa-eye"></i> إظهار المحادثات المنتهية <!-- Default: show ended -->
+        </button>
+        
+        <!-- أقسام المحادثات الديناميكية (مفتوحة افتراضياً الآن) -->
+        <div class="conversation-category">
+          <h4 class="category-title" data-category="client">
+            المستخدمون <span class="unread-badge" id="unreadClients"></span>
+            <i class="fas fa-chevron-up toggle-icon"></i> <!-- سهم لأعلى لأنها مفتوحة افتراضياً -->
+          </h4>
+          <div class="conversation-list" id="clientsList">
+            <!-- محادثات المستخدمين ستُضاف هنا -->
+          </div>
+        </div>
+        
+        <div class="conversation-category">
+          <h4 class="category-title" data-category="lawyer">
+            المحامون <span class="unread-badge" id="unreadLawyers"></span>
+            <i class="fas fa-chevron-up toggle-icon"></i> <!-- سهم لأعلى لأنها مفتوحة افتراضياً -->
+          </h4>
+          <div class="conversation-list" id="lawyersList">
+            <!-- محادثات المحامين ستُضاف هنا -->
+          </div>
+        </div>
+        
+        <div class="conversation-category">
+          <h4 class="category-title" data-category="company">
+            الشركات <span class="unread-badge" id="unreadCompanies"></span>
+            <i class="fas fa-chevron-up toggle-icon"></i> <!-- سهم لأعلى لأنها مفتوحة افتراضياً -->
+          </h4>
+          <div class="conversation-list" id="companiesList">
+            <!-- محادثات الشركات ستُضاف هنا -->
+          </div>
+        </div>
+      </aside>
+
+      <!-- منطقة الشات الرئيسية (على أقصى اليسار في RTL) -->
+      <main id="chat-container">
+        <div class="chat-header">
+          <div class="user-info-header">
+            <div class="user-status">
+              <h2 id="chatHeaderName">اختر محادثة</h2>
+              <span class="info-icon" id="infoIcon" title="معلومات المحادثة"><i class="fas fa-info"></i></span>
+              <div class="status" id="chatHeaderStatus"></div>
+            </div>
+          </div>
+          <div class="chat-actions">
+            <button id="endChatButton" class="end-chat-btn" style="display: none;">
+              <i class="fas fa-times"></i> إنهاء المحادثة
+            </button>
+          </div>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+          <div class="initial-message">اختر محادثة من القائمة للبدء.</div>
+        </div>
+        <div class="chat-input">
+          <input type="text" id="messageInput" placeholder="اكتب رسالتك هنا...">
+          <button id="sendMessageButton" title="إرسال"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </main>
+    </div>
+
+    <!-- زر عائم لفتح شريط المحادثات على الموبايل (يظهر فقط إذا كان الشريط مغلقًا) -->
+    <button class="open-conv-btn" id="openConvBtn" title="فتح المحادثات">
+      <i class="fas fa-comments"></i>
+    </button>
+
+    <!-- Modal لـ معلومات المحادثة -->
+    <div id="infoModal">
+      <div class="modal-content">
+        <button class="close-modal" id="closeInfoModal">&times;</button>
+        <h3>معلومات المحادثة</h3>
+        <div id="modalInfoContent"></div>
+      </div>
+    </div>
+
+<script src="script.js"></script> <!-- لـ sidebar الأيسر ووظائفه العامة -->
+<script src="support_chat.js"></script> <!-- JavaScript الخاص بصفحة الدعم -->
+</body>
+</html>

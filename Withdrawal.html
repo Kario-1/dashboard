@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>طلبات السحب</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="container">
+     <aside id="sidebar">
+        <div class="navigation">
+          <div class="top-list">
+            <div class="logo">
+              <img
+                src="images/WhatsApp Image 2025-05-23 at 23.12.01_0870f7e4.jpg"
+                alt="شعار"
+              />
+            </div>
+            <div id="toggleBtn">
+              <i class="fas fa-bars"></i>
+            </div>
+          </div>
+          <div class="sidebar-menu">
+            <ul>
+              <li class="list active">
+                <a href="dashboard.html">
+                  <span class="icon"
+                    ><i class="fa-solid fa-user-tie"></i
+                  ></span>
+                  <span class="title">الادمن</span>
+                </a>
+              </li>
+              <li class="list">
+                <a href="model.html">
+                  <span class="icon"
+                    ><i class="fa-solid fa-comment"></i
+                  ></span>
+                  <span class="title">المودل</span>
+                </a>
+              </li>
+              <li class="list">
+                <a href="order.html">
+                  <span class="icon"><i class="fa-solid fa-box"></i></span>
+                  <span class="title">الطلبات</span>
+                </a>
+              </li>
+              <li class="list">
+                <a href="Withdrawal.html">
+                  <span class="icon"><i class="fas fa-money-check-alt"></i></span>
+                  <span class="title">السحب</span>
+                </a>
+              </li>
+              <li class="list">
+                <a href="support.html">
+                  <span class="icon"><i class="fas fa-headset"></i></span>
+                  <span class="title">الدعم</span>
+                </a>
+              </li>
+              <li class="list">
+                <a href="index.html">
+                  <span class="icon"
+                    ><i class="fa-solid fa-right-from-bracket"></i
+                  ></span>
+                  <span class="title">الخروج</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+      <main>
+        <section id="withdrawal-requests" class="content-section active">
+          <h2><i class="fas fa-money-bill-alt"></i> قائمة طلبات السحب</h2>
+
+          <!-- Filter controls -->
+          <div id="filter-container">
+            <input
+              type="text"
+              id="search-input"
+              placeholder="ابحث حسب رقم الطلب أو معرف المحامي"
+              aria-label="بحث حسب رقم الطلب أو معرف المحامي"
+            />
+            <select
+              id="status-filter"
+              class="status-select"
+              aria-label="تصفية حسب الحالة"
+            >
+              <option value="all">الكل</option>
+              <option value="pending">معلق</option>
+              <option value="approved">موافق عليه</option>
+              <option value="rejected">مرفوض</option>
+            </select>
+          </div>
+
+          <table class="orders-table" aria-describedby="requests-desc">
+            <thead>
+              <tr>
+                <th>رقم الطلب</th>
+                <th>معرف المحامي</th>
+                <th>اسم المحامي</th>
+                <th>المبلغ</th>
+                <th>رقم الهاتف</th>
+                <th>الحالة</th>
+                <th>تاريخ الإنشاء</th>
+                <th>آخر تحديث</th>
+                <th>ملاحظات المسؤول</th>
+                <th>تحديث الحالة</th>
+              </tr>
+            </thead>
+            <tbody id="requests-body">
+              <tr>
+                <td colspan="10">جارٍ التحميل...</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+
+    <!-- Modal for full description (reused from orders page) -->
+    <div
+      id="description-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+      <div class="modal-content">
+        <span class="close-btn" aria-label="إغلاق">&times;</span>
+        <h3 id="modal-title">الوصف الكامل</h3>
+        <p id="full-description"></p>
+      </div>
+    </div>
+
+    <!-- ***** بداية الـ JavaScript الخاص بهذه الصفحة ***** -->
+    <script>
+      // جلب التوكن من Local Storage (مع التأكد من وجوده)
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        // لو مفيش توكن، ممكن توجه المستخدم لصفحة تسجيل الدخول
+        alert('برجاء تسجيل الدخول أولاً');
+        window.location.href = 'login.html'; // استبدل بصفحة تسجيل الدخول الخاصة بك
+      }
+
+      let withdrawalRequestsData = [];
+      let filteredRequestsData = [];
+
+      // حالات طلبات السحب المتاحة (حسب API الـ PUT)
+      const statusOptions = [
+                            'pending',
+                            'reviewed', // تم التعديل
+                            'paid',     // تم الإضافة
+                            'rejected',
+                            ];
+
+      // دالة لجلب طلبات السحب من الـ API
+      async function fetchWithdrawalRequests() {
+        try {
+          const statusParam = document.getElementById('status-filter').value;
+          const url = new URL('https://enabled-early-vulture.ngrok-free.app/admin/withdrawal-requests');
+          if (statusParam !== 'all') {
+            url.searchParams.append('status', statusParam);
+          }
+
+          const response = await fetch(url.toString(), {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'ngrok-skip-browser-warning': 'true', // لتجنب صفحة تحذير Ngrok
+            },
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`فشل في تحميل البيانات: ${response.status} - ${errorText.substring(0, 100)}...`);
+          }
+
+          withdrawalRequestsData = await response.json();
+          if (!Array.isArray(withdrawalRequestsData)) withdrawalRequestsData = [];
+          filteredRequestsData = [...withdrawalRequestsData];
+          renderTable(filteredRequestsData);
+        } catch (error) {
+          console.error('خطأ أثناء تحميل طلبات السحب:', error);
+          document.getElementById('requests-body').innerHTML = `
+            <tr><td colspan="10">حدث خطأ أثناء تحميل البيانات: ${error.message}</td></tr>
+          `;
+        }
+      }
+
+      // دالة لعرض البيانات في الجدول
+      function renderTable(data) {
+        const tbody = document.getElementById('requests-body');
+        tbody.innerHTML = '';
+
+        if (data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="10">لا توجد طلبات سحب</td></tr>';
+          return;
+        }
+
+        data.forEach((request) => {
+          const row = document.createElement('tr');
+
+          row.innerHTML = `
+            <td>#${request.request_id}</td>
+            <td>${request.lawyer_id || ''}</td>
+            <td>${request.lawyer_name || ''}</td>
+            <td>${request.amount.toLocaleString('ar-EG', { style: 'currency', currency: 'EGP' })}</td>
+            <td>${request.phone_number || ''}</td>
+            <td class="status-cell">${formatStatus(request.status)}</td>
+            <td>${formatDate(request.created_at)}</td>
+            <td>${formatDate(request.updated_at)}</td>
+            <td>
+              <textarea
+                class="comment-textarea"
+                data-request-id="${request.request_id}"
+                placeholder="أضف ملاحظات المسؤول"
+                rows="2"
+              >${request.admin_notes || ''}</textarea>
+              <button class="comment-save-btn" data-request-id="${
+                request.request_id
+              }" aria-label="حفظ الملاحظة">حفظ</button>
+            </td>
+            <td>
+              <select class="status-update-dropdown" data-request-id="${
+                request.request_id
+              }">
+                ${statusOptions
+                  .map(
+                    (status) =>
+                      `<option value="${status}" ${
+                        status === request.status ? 'selected' : ''
+                      }>${formatStatus(status)}</option>`
+                  )
+                  .join('')}
+              </select>
+            </td>
+          `;
+
+          tbody.appendChild(row);
+        });
+
+        // إعادة ربط الـ event handlers بعد كل عملية render
+        attachStatusChangeHandlers();
+        attachCommentSaveHandlers();
+        // لا يوجد وصف كامل هنا، لكن نترك الدالة لو ممكن تحتاجها مستقبلا
+        // attachDescriptionHandlers(); 
+      }
+
+      // دالة لتنسيق التاريخ
+      function formatDate(dateStr) {
+        if (!dateStr) return '';
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) return '';
+        return date.toLocaleDateString('ar-EG', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+      }
+
+      // دالة لتنسيق حالة الطلب للعرض
+      function formatStatus(status) {
+        switch (status) {
+            case 'pending': return 'معلق';
+            case 'reviewed': return 'قيد المراجعة'; // إضافة حالة جديدة
+            case 'paid': return 'تم الدفع';     // إضافة حالة جديدة
+            case 'rejected': return 'مرفوض';
+            default: return status;
+        }
+    }
+
+      // دوال تحديث الحالة والتعليق
+      async function updateRequest(requestId, newStatus = null, newAdminNotes = null) {
+        try {
+          document.body.style.cursor = 'wait';
+
+          // البحث عن الطلب الحالي للحصول على الحالة والملاحظات الحالية
+          const currentRequest = withdrawalRequestsData.find(
+            (r) => r.request_id.toString() === requestId.toString()
+          );
+
+          if (!currentRequest) {
+              throw new Error('لم يتم العثور على طلب السحب.');
+          }
+
+          // استخدام القيمة الجديدة لو موجودة، وإلا نستخدم القيمة الحالية
+          const statusToSend = newStatus !== null ? newStatus : currentRequest.status;
+          const adminNotesToSend = newAdminNotes !== null ? newAdminNotes : currentRequest.admin_notes;
+
+          const url = `https://enabled-early-vulture.ngrok-free.app/admin/withdrawal-requests/${requestId}`;
+
+          const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+              'ngrok-skip-browser-warning': 'true',
+            },
+            body: JSON.stringify({
+              status: statusToSend,
+              admin_notes: adminNotesToSend,
+            }),
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`فشل في تحديث طلب السحب: ${response.status} - ${errorText.substring(0, 100)}...`);
+          }
+
+          alert('تم تحديث طلب السحب بنجاح');
+          await fetchWithdrawalRequests(); // إعادة تحميل البيانات بعد التحديث
+        } catch (error) {
+          alert(error.message);
+        } finally {
+          document.body.style.cursor = 'default';
+        }
+      }
+
+      function attachStatusChangeHandlers() {
+        const selects = document.querySelectorAll('.status-update-dropdown');
+        selects.forEach((select) => {
+          select.onchange = (e) => {
+            const requestId = e.target.getAttribute('data-request-id');
+            const newStatus = e.target.value;
+            // عند تغيير الحالة، التعليق هيكون هو التعليق الحالي للطلب
+            updateRequest(requestId, newStatus, null); 
+          };
+        });
+      }
+
+      function attachCommentSaveHandlers() {
+        const buttons = document.querySelectorAll('.comment-save-btn');
+        buttons.forEach((btn) => {
+          btn.onclick = () => {
+            const requestId = btn.getAttribute('data-request-id');
+            const textarea = document.querySelector(
+              `textarea.comment-textarea[data-request-id="${requestId}"]`
+            );
+            if (textarea) {
+              const newComment = textarea.value.trim();
+              // عند حفظ التعليق، الحالة هتكون هي الحالة الحالية للطلب
+              updateRequest(requestId, null, newComment);
+            }
+          };
+        });
+      }
+
+      // دوال التصفية والبحث
+      const searchInput = document.getElementById('search-input');
+      const statusFilter = document.getElementById('status-filter');
+
+      searchInput.addEventListener('input', applyFilters);
+      statusFilter.addEventListener('change', fetchWithdrawalRequests); // عند تغيير الفلتر، نعمل fetch جديد
+
+      function applyFilters() {
+        const searchTerm = searchInput.value.trim().toLowerCase();
+        // statusFilter.value يتم استخدامه مباشرة في fetchWithdrawalRequests
+        
+        filteredRequestsData = withdrawalRequestsData.filter((request) => {
+            const matchesSearch =
+                request.request_id.toString().includes(searchTerm) ||
+                request.lawyer_id.toString().includes(searchTerm) ||
+                (request.lawyer_name && request.lawyer_name.toLowerCase().includes(searchTerm)) ||
+                searchTerm === ''; // لو حقل البحث فاضي، الكل بيظهر
+
+            return matchesSearch;
+        });
+        renderTable(filteredRequestsData);
+      }
+      
+      // Modal for description (reused logic from order.html if needed for textareas)
+      // في حالة طلبات السحب، الوصف بيكون ملاحظات المسؤول
+      // ممكن تستخدم نفس الـ modal لعرض الـ admin_notes بشكل كبير لو كانت طويلة
+      function attachDescriptionHandlers() {
+        // حالياً لا يوجد وصف منفصل في طلبات السحب، فقط ملاحظات المسؤول
+        // ولكن يمكن استخدام هذا الـ modal لعرض الـ admin_notes لو كانت طويلة جداً
+        const descCells = document.querySelectorAll('.comment-textarea'); // أو أي element تريد عرضه في modal
+        const modal = document.getElementById('description-modal');
+        const fullDesc = document.getElementById('full-description');
+        const closeBtn = modal.querySelector('.close-btn');
+
+        descCells.forEach((cell) => {
+            // ممكن تربط الـ modal بزرار أو أيقونة بجانب textarea لو النص طويل
+            // أو تفتحها عند الضغط على الـ textarea نفسها لو عايز
+        });
+
+        closeBtn.onclick = () => {
+            modal.style.display = 'none';
+        };
+
+        window.onclick = (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+      }
+
+
+      // استدعاء جلب البيانات عند تحميل الصفحة لأول مرة
+      document.addEventListener('DOMContentLoaded', fetchWithdrawalRequests);
+    </script>
+    <script src="script.js"></script>
+  </body>
+</html>

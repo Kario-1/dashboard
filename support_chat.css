@@ -1,0 +1,551 @@
+/* Layout & Container */
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* لمنع scroll غير مرغوب فيه */
+    background-color: #f5f5f5;
+}
+
+
+/* --- Conversation Bar Styles --- */
+#conversation-bar {
+    position: relative; /* ليكون جزء من الـ flex flow */
+    flex-shrink: 0;
+    width: 280px; /* العرض الافتراضي */
+    min-width: 220px; /* الحد الأدنى للعرض */
+    max-width: 500px; /* الحد الأقصى للعرض */
+    background: #fff;
+    border-right: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    transition: margin-left 0.3s ease, width 0.3s ease; /* تغيير المارجن والـ width */
+    z-index: 100; /* أقل من الـ sidebar */
+    overflow: hidden;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.07);
+    height: 100vh; /* ليملأ الشاشة بالكامل */
+}
+
+#conversation-bar.collapsed {
+    display: none; /* مخفي عندما يكون collapsed */
+}
+
+/* Handle for resizing conversation bar */
+#conversation-bar .resize-handle {
+    position: absolute;
+    left: -5px; /* يكون على شمال الـ conversation-bar */
+    top: 0;
+    bottom: 0;
+    width: 15px;
+    cursor: col-resize;
+    background: transparent;
+    height: 100%;
+    z-index: 3;
+}
+.resize-handle:hover {
+    background-color: #007bff;
+}
+
+/* --- Chat Container Styles --- */
+#chat-container {
+    flex-grow: 10; /* بيأخذ المساحة المتبقية */
+    display: grid;
+    flex-direction: column;
+    background: #f5f5f5;
+    overflow: auto;
+    /* الـ margins سيتم تحديدها ديناميكيا بواسطة Flexbox */
+}
+
+/* --- Media Queries for Responsiveness --- */
+
+/* For smaller screens (e.g., tablets & phones) - hide sidebar and conversation bar by default */
+@media (max-width: 991px) {
+
+
+    #conversation-bar {
+        position: fixed; /* يصبح fixed على الموبايل */
+        left: 0;
+        top: 0;
+        transform: translateX(-100%); /* مخفي افتراضياً */
+        transition: transform 0.3s ease;
+        margin-left: 0; /* إلغاء أي margin قديم */
+    }
+    #conversation-bar.open { /* هذا الكلاس يضاف بواسطة JS ليظهر Conversation Bar */
+        transform: translateX(0);
+    }
+    #conversation-bar.collapsed { /* هذا الكلاس يظل مخفيًا */
+        transform: translateX(-100%);
+    }
+
+    #chat-container {
+        margin-left: 0 !important; /* إلغاء أي margin على الموبايل */
+        margin-right: 0 !important;
+    }
+
+    .open-conv-btn { /* زر فتح قائمة المحادثات للموبايل */
+        display: flex; /* بيظهر على الموبايل */
+    }
+}
+
+/* For very small screens (e.g., phones) */
+@media (max-width: 768px) {
+    #infoModal .modal-content {
+        min-width: unset;
+        max-width: 95vw; /* عشان ما يخرجش بره الشاشة الصغيرة */
+    }
+}
+
+/* --- Chat Header --- */
+.chat-header {
+    background: #2196f3;
+    color: #fff;
+    border-radius: 0;
+    padding: 10px 20px 8px 20px;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.user-info-header {
+    display: flex;
+    align-items: center;
+}
+.user-status {
+    display: flex;
+    align-items: center;
+}
+#chatHeaderName {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin: 0 10px 0 0; /* مسافة عن أيقونة المعلومات */
+    display: inline-block;
+}
+.info-icon {
+    display: inline-block;
+    margin-right: 8px; /* مسافة عن اسم المستخدم */
+    color: #fff;
+    background: #1976d2;
+    border: 1px solid #ffffff;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    text-align: center;
+    line-height: 26px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.info-icon:hover {
+    background: #1565c0;
+}
+.status {
+    font-size: 0.9em;
+    opacity: 0.8;
+    margin-right: 10px;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+.status.online {
+    background-color: #4CAF50;
+    color: white;
+}
+.status.offline {
+    background-color: #F44336;
+    color: white;
+}
+.status.ended {
+    background-color: #9E9E9E;
+    color: white;
+}
+
+/* Chat actions (end chat button) */
+.chat-actions {
+    margin-left: 10px;
+}
+.end-chat-btn {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.2s;
+}
+.end-chat-btn:hover {
+    background-color: #d32f2f;
+}
+
+/* Chat Messages Area */
+.chat-messages {
+    flex: 1 1 0;
+    overflow-y: auto;
+    padding: 20px;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+}
+.initial-message {
+    text-align: center;
+    color: #777;
+    padding: 20px;
+    font-size: 1.1em;
+}
+/* Individual message styling */
+.message {
+    padding: 10px 15px;
+    border-radius: 18px;
+    margin-bottom: 10px;
+    max-width: 70%;
+    word-wrap: break-word;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.message.user-message {
+    background-color: #e0eaf7;
+    color: #222;
+    margin-left: auto;
+    margin-right: 0;
+    border-bottom-right-radius: 5px;
+}
+.message.received-message {
+    background-color: #fff;
+    color: #333;
+    margin-right: auto;
+    margin-left: 0;
+    border-bottom-left-radius: 5px;
+}
+.message-header {
+    font-size: 0.8em;
+    color: #777;
+    margin-bottom: 5px;
+}
+.message-timestamp {
+    font-size: 0.75em;
+    color: #999;
+    text-align: right;
+    margin-top: 5px;
+}
+
+
+/* Chat Input Area */
+.chat-input {
+    display: flex;
+    padding: 15px;
+    background: #eee;
+    border-top: 1px solid #ddd;
+    gap: 10px;
+}
+.chat-input input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    font-size: 1em;
+}
+.chat-input button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2em;
+    transition: background-color 0.2s;
+}
+.chat-input button:hover {
+    background-color: #0056b3;
+}
+
+
+/* Conversation Bar List & Search */
+.conversation-header {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+.conversation-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+.conversation-controls {
+    display: flex;
+    gap: 5px;
+}
+.conversation-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    color: #666;
+    font-size: 1.2em;
+}
+.search-box {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+}
+.search-box input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+.search-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.search-btn:hover {
+    background-color: #218838;
+}
+
+.conversation-category {
+    border-bottom: 1px solid #ddd;
+    border-radius: 10%;
+    padding: 0 15px;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+}
+.category-title {
+    padding: 12px 15px;
+    margin: 0;
+    border-radius: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 1rem;
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #eee;
+}
+.category-title:hover {
+    background-color: #f0f0f0;
+}
+.conversation-list {
+    max-height: 300px; /* قيمة افتراضية، سيتم تعديلها بواسطة JS للـ collapse */
+    overflow-y: auto;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    padding-bottom: 30px;
+}
+.conversation-list.collapsed {
+    max-height: 0;
+    overflow: hidden;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.conversation-item {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.conversation-item:hover {
+    background-color: #f5f5f5;
+}
+.conversation-item.active {
+    background-color: #e3f2fd;
+}
+.conversation-item.ended-chat {
+    opacity: 0.6; /* لتعتيم المحادثات المنتهية */
+    background-color: #f0f0f0;
+}
+.conversation-item.ended-chat:hover {
+    opacity: 0.8;
+    background-color: #e8e8e8;
+}
+
+
+/* Toggle categories styles - ensure correct rotation */
+.category-title .toggle-icon {
+    transition: transform 0.3s ease;
+}
+/* عندما تكون القائمة COLLAPSED، السهم يشير للأسفل (0 درجة) */
+.conversation-list.collapsed + .category-title .toggle-icon {
+    transform: rotate(0deg);
+}
+/* عندما تكون القائمة مفتوحة (ليست COLLAPSED)، السهم يشير للأعلى (180 درجة) */
+.conversation-list:not(.collapsed) + .category-title .toggle-icon {
+    transform: rotate(180deg);
+}
+
+
+/* Unread Badges */
+.unread-badge {
+    display: inline-block;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 7px;
+    background: rgba(33,150,243,0.08);
+    color: #2196f3;
+    border: 1px solid #2196f3;
+    border-radius: 50px;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    margin-left: 8px; /* ليكون على يسار النص في RTL */
+    line-height: 22px;
+}
+.conversation-item .unread-count {
+    display: inline-block;
+    min-width: 18px;
+    height: 18px;
+    background: rgba(255, 152, 0, 0.12);
+    color: #ff9800;
+    border: 1px solid #ff9800;
+    border-radius: 50%;
+    font-size: 0.9em;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    margin-left: 8px; /* ليكون على يسار اسم المحادثة في RTL */
+    line-height: 16px;
+}
+
+
+/* Toggle Ended Chats Button */
+.toggle-ended-chats-btn {
+    width: calc(100% - 30px);
+    margin: 15px 15px;
+    padding: 8px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: background-color 0.2s;
+}
+.toggle-ended-chats-btn:hover {
+    background-color: #5a6268;
+}
+
+/* Open/Close Conversation Bar Button (Floating Button) */
+.open-conv-btn {
+    position: fixed;
+    left: 0;
+    top: 90px;
+    z-index: 1200;
+    width: 48px;
+    height: 48px;
+    background: #2582fc;
+    color: #fff;
+    border-radius: 0 24px 24px 0;
+    display: none; /* مخفي افتراضياً، بيظهر في الـ media query */
+    align-items: center;
+    justify-content: center;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.08);
+    cursor: pointer;
+    transition: width 0.3s, background 0.2s, box-shadow 0.2s;
+    font-size: 1.7em;
+    opacity: 0.85;
+    overflow: hidden;
+}
+.open-conv-btn:hover {
+    width: 70px;
+    background: #0056b3;
+    opacity: 1;
+    box-shadow: 4px 4px 16px rgba(0,0,0,0.13);
+}
+.open-conv-btn i {
+    transition: transform 0.3s;
+}
+.open-conv-btn:hover i {
+    transform: scale(1.2);
+}
+
+/* Modal Info */
+#infoModal {
+    display: none; /* مخفي افتراضياً */
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.25);
+    z-index: 2000; /* أعلى من كل حاجة */
+    align-items: center;
+    justify-content: center;
+}
+#infoModal.active {
+    display: flex; /* يظهر لما ياخد كلاس 'active' */
+}
+#infoModal .modal-content {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px 24px 24px 24px;
+    min-width: 320px;
+    max-width: 50vw;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    position: relative;
+    text-align: right;
+    animation: fadeInScale 0.3s ease-out forwards;
+}
+#infoModal .modal-content h3 {
+    text-align: center;
+    margin-top: 0;
+    color: #333;
+}
+#infoModal .modal-content p {
+    margin-bottom: 10px;
+    line-height: 1.6;
+    color: #555;
+}
+#infoModal .modal-content strong {
+    color: #007bff;
+}
+
+#infoModal .close-modal {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    background: #f44336;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#infoModal .close-modal:hover {
+    background: #b71c1c;
+    transform: rotate(90deg);
+}
+/* Fade in animation for modal */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

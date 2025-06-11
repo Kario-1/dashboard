@@ -1,0 +1,1381 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+;
+font-family: 'Tajawal', sans-serif;
+
+}
+
+body {
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* تصميم الشريط الجانبي */
+aside {
+  width: 280px;
+  background: white;
+  transition: all 0.3s ease;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+  border-right: 1px solid #eee;
+  position: relative;
+}
+
+.navigation {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.top-list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #f0f0f0;
+  height: 70px;
+}
+
+.logo img {
+  width: 60px;
+  height: auto;
+
+  object-fit: cover;
+}
+
+#toggleBtn {
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #888;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#toggleBtn:hover {
+  color: #4a90e2;
+}
+
+.sidebar-menu {
+  flex: 1;
+  padding: 15px 0;
+  overflow-y: auto;
+}
+
+.sidebar-menu ul {
+  list-style: none;
+}
+
+.sidebar-menu ul li {
+  margin: 5px 0;
+}
+
+.sidebar-menu ul li a {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  color: black;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  margin: 0 10px;
+  font-weight: bold;
+}
+
+.sidebar-menu ul li a:hover {
+  background-color: #cee3ff;
+  color: #000000;
+}
+
+.sidebar-menu ul li.active a {
+  background-color: #348afb;
+  color:#ffffff;
+  border-right: #011f41;
+  font-weight: bold;
+}
+
+.sidebar-menu ul li a .icon {
+  font-size: 18px;
+  width: 24px;
+  display: flex;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.sidebar-menu ul li.active a .icon {
+  color: #ffffff;
+}
+
+.sidebar-menu ul li a .title {
+  font-weight: 500;
+  margin-right: 15px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+/* الحالة المغلقة */
+aside.collapsed {
+  width: 70px !important;
+}
+
+aside.collapsed .title {
+  display: none;
+}
+
+aside.collapsed .sidebar-menu ul li a {
+  justify-content: center;
+  padding: 12px 0;
+  margin: 0 5px;
+}
+
+aside.collapsed .top-list {
+  padding: 15px 10px;
+  justify-content: center;
+}
+
+aside.collapsed .logo {
+  display: none;
+}
+
+/* المحتوى الرئيسي */
+main {
+  flex: 1;
+  padding: 30px;
+  background-color: white;
+  margin: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: margin-left 0.3s ease;
+}
+
+/* التصميم المتجاوب */
+@media (max-width: 768px) {
+  aside:not(.collapsed) {
+    position: fixed;
+    z-index: 1000;
+    height: 100vh;
+  }
+
+  aside.collapsed {
+    width: 60px !important;
+  }
+
+  main {
+    margin-left: 80px;
+  }
+
+  aside.collapsed + main {
+    margin-left: 80px;
+  }
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.chat-header {
+  background-color: #1e7fff;
+  color: black;
+  padding: 15px;
+  text-align: center;
+  border-radius: 8px 8px 0 0;
+}
+.chat-header h2{
+  color:rgb(255, 255, 255);
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #f9f9f9;
+}
+
+.message {
+  margin-bottom: 15px;
+  padding: 10px 15px;
+  border-radius: 18px;
+  max-width: 70%;
+  word-wrap: break-word;
+}
+
+.user-message {
+  background-color: #e0eaf7;
+  margin-left: auto;
+  border-bottom-right-radius: 5px;
+}
+
+.bot-message {
+  background-color: #e2e3e55e;
+  margin-right: auto;
+  border: 1px solid #e0e0e0;
+  border-bottom-left-radius: 5px;
+}
+
+.chat-input {
+  display: flex;
+  padding: 15px;
+  background-color: #fff;
+  border-top: 1px solid #e0e0e0;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  outline: none;
+}
+
+.chat-input button {
+  background-color:#e0eaf7;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.chat-input button:hover {
+  background-color: #3a5a80;
+}
+
+/* أنماط إعدادات API */
+.api-container {
+  padding: 20px;
+}
+
+.api-form {
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.btn-primary {
+  background-color: #4a6fa5;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #3a5a80;
+}
+
+.api-docs {
+  background-color: #f5f7fa;
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 4px solid #4a6fa5;
+}
+
+.api-docs pre {
+  background-color: #2d2d2d;
+  color: #f8f8f2;
+  padding: 15px;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+.content-section {
+  display: none;
+}
+
+.content-section.active {
+  display: block;
+}
+
+table.orders-table {
+  width: 100%;
+  border-collapse: separate; 
+  border-spacing: 2px;
+  margin-top: 20px;
+}
+table.orders-table th{
+  color: rgb(255, 255, 255) !important;
+  background-color: #007bff !important;
+}
+table.orders-table th,
+table.orders-table td {
+  padding: 12px 15px;
+  text-align: center;
+}
+
+table.orders-table th {
+  background-color: #ccdff7;
+  color: rgb(102, 112, 133);
+}
+
+table.orders-table tr:nth-child(even) {
+  background-color: #e0eaf7;
+}
+
+/* أنماط نموذج الدعم */
+.support-form {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #d7c7c7;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(217, 205, 205, 0.1);
+}
+
+.support-form .form-group {
+  margin-bottom: 15px;
+}
+
+.support-form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+
+
+
+.chat-messages {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    height: 600px; /* ارتفاع ثابت لنافذة الشات */
+    overflow-y: auto; /* عشان لو الرسائل كترت يبقى فيه scroll */
+    margin-bottom: 15px;
+    background-color: #f9f9f9;
+}
+
+.message {
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    max-width: 80%;
+    word-wrap: break-word; /* عشان لو الكلمة طويلة ما تطلعش بره */
+}
+
+.user-message {
+    background-color:#e0eaf7; ; /* لون أزرق لرسائل المستخدم */
+    color: black;
+    margin-left: auto; /* عشان تيجي على اليمين */
+    border-bottom-right-radius: 0; /* شكل مميز للفقاعة */
+}
+
+.bot-message {
+    background-color: #e2e3e55e; /* لون رمادي لردود الروبوت */
+    color: #333;
+    margin-right: auto; /* عشان تيجي على الشمال */
+    border-bottom-left-radius: 0; /* شكل مميز للفقاعة */
+}
+
+.chat-input {
+    display: flex;
+    gap: 10px; /* مسافة بين الـ input والزرار */
+}
+
+.chat-input input {
+    flex-grow: 1; /* عشان الـ input ياخد أكبر مساحة ممكنة */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+}
+
+.chat-input button {
+    padding: 10px 15px;
+    background-color: #2582fc;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.chat-input button:hover {
+    background-color: #81b8ff;
+}
+
+.data-sources-selection {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.data-sources-selection h3 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #000000;
+    font-size: 1.1em;
+}
+
+.checkbox-group {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap; /* عشان ينزل سطر لو العدد كبير */
+    gap: 15px; /* مسافة بين الـ checkboxes */
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 5px;
+    color: #00346c;
+}
+
+.checkbox-group label {
+    font-size: 0.95em;
+    color: #348afb;
+    cursor: pointer;
+}
+
+
+
+
+
+      #search-input {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        padding: 0.5rem;
+        width: 100%;
+        max-width: 300px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      select.status-select,
+      select.status-update-dropdown {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.9rem;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+      select.status-select:focus,
+      select.status-update-dropdown:focus {
+        outline: none;
+        border-color: #348afb;
+      }
+
+      #filter-container {
+        margin-bottom: 1rem;
+      }
+
+      .description-cell {
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer;
+        color: #348afb;
+        text-decoration: underline;
+      }
+
+      #description-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      #description-modal .modal-content {
+        background-color: #fff;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 8px;
+        max-width: 600px;
+        word-wrap: break-word;
+        font-size: 1.1rem;
+        direction: rtl;
+      }
+      #description-modal .close-btn {
+        float: right;
+        font-size: 1.5rem;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      textarea.comment-textarea {
+        width: 100%;
+        min-height: 50px;
+        font-size: 0.9rem;
+        padding: 4px 6px;
+        resize: vertical;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        font-family: inherit;
+      }
+      textarea.comment-textarea:focus {
+        outline: none;
+        border-color: #348afb;
+        background-color: #f0f8ff;
+      }
+      #full-description {
+        margin-top: 1rem;
+      }
+      .comment-save-btn {
+        background-color:#3a5a80 ;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 4px;
+      }
+
+      .comment-save-btn:hover,
+      .comment-save-btn:focus {
+        background-color: #0056b3;
+        outline: none;
+      }
+
+
+.dashboard-header {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-bottom: 1px solid #e9ecef;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.dashboard-header h2 {
+    margin: 0;
+    color: #343a40;
+    font-size: 1.8em;
+}
+
+.dashboard-header .fas {
+    color: #4284d9; /* لون الأيقونة */
+}
+
+/* تنسيقات شبكة الكروت */
+.stats-grid {
+    display: grid;
+    /* 3 أعمدة متساوية في الحجم */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px; /* المسافة بين الكروت */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+/* تنسيقات الكارت الواحد */
+.stat-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* توسيط المحتوى أفقياً */
+    justify-content: center; /* توسيط المحتوى عمودياً */
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    min-height: 150px; /* لتحديد ارتفاع موحد للكروت */
+    border: 1px solid #e0e0e0;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.stat-icon {
+    font-size: 2.5em; /* حجم الأيقونة */
+    color:#4284d9; /* لون الأيقونة */
+    margin-bottom: 15px;
+}
+
+.stat-label {
+    font-size: 1.1em;
+    color: #757575; /* لون النص الوصفي */
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 1.5rem; /* حجم الرقم نفسه */
+    font-weight: bold;
+    color: #343a40; /* لون الرقم */
+    direction: ltr; /* لضمان عرض الأرقام من الشمال لليمين حتى في سياق عربي */
+}
+
+/* تنسيقات Skeleton Loader (لتحميل أولي سلس) */
+.skeleton-card {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border: none; /* إزالة الـ border للكروت الهيكلية */
+    box-shadow: none; /* إزالة الظل للكروت الهيكلية */
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.error-message {
+    color: #00357a; 
+    font-size: 1.2em;
+    text-align: center;
+    padding: 20px;
+    border: 2px solid #00357a;
+    background-color: #a9ceff;
+    border-radius: 8px;
+    grid-column: 1 / -1; /* عشان الرسالة تاخد عرض الـ grid كله */
+}
+
+
+
+.modal {
+    display: none; /* مخفي بشكل افتراضي */
+    position: fixed; /* فوق كل العناصر */
+    z-index: 1000; /* ترتيب الظهور */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* لو المحتوى كبير ممكن يظهر scroll */
+    background-color: rgba(0,0,0,0.6); /* خلفية شبه شفافة */
+    justify-content: center; /* توسيط أفقي */
+    align-items: center; /* توسيط رأسي */
+    padding: 20px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto; /* توسيط */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+    max-width: 900px; /* أقصى عرض للـ modal */
+    width: 95%; /* عرض الـ modal */
+    max-height: 90vh; /* أقصى ارتفاع */
+    overflow-y: auto; /* لتمكين التمرير إذا كان المحتوى كبير */
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 30px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #333;
+    text-decoration: none;
+}
+
+.modal-title {
+    text-align: center;
+    color: #343a40;
+    font-size: 1.8em;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+}
+
+.modal-body {
+    margin-top: 20px;
+}
+
+/* تنسيقات عناصر التحكم داخل الـ modal */
+.modal-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap; /* للسماح بالعناصر بالنزول لسطر جديد على الشاشات الصغيرة */
+}
+
+.modal-controls input[type="number"],
+.modal-controls button {
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+}
+
+.modal-controls button {
+    background-color: #003771;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal-controls button:hover {
+    background-color: #007bff;
+}
+
+
+/* تنسيقات الكروت داخل الـ Modal (لقوائم الاشتراكات/المستخدمين/الإيرادات) */
+.list-item-card {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+}
+
+.list-item-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.list-item-card p {
+    margin: 5px 0;
+    color: #343a40;
+    font-size: 0.95em;
+    display: flex;
+    justify-content: space-between; /* عشان القيم تكون على اليمين والوصف على الشمال */
+    align-items: center;
+    gap: 10px; /* مسافة بين الـ key والـ value */
+}
+
+.list-item-card p strong {
+    color: #0056b3;
+    flex-shrink: 0; /* عشان الكلمة متتصغرش */
+}
+
+/* تنسيق رسالة الخطأ داخل الـ Modal */
+.modal-body .error-message {
+    color: #007bff;
+    font-size: 1.1em;
+    text-align: center;
+    padding: 15px;
+    border: 1px solid #00346c;
+    background-color: #f8d7da;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+/* تنسيق رسالة "لا توجد بيانات" */
+.modal-body .info-message {
+    color: #6c757d;
+    font-size: 1.1em;
+    text-align: center;
+    padding: 15px;
+    background-color: #e2e3e5;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+/* تنسيق الـ spinner */
+.loading-spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: blue;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin: 50px auto; /* توسيط */
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* تنسيق الكروت القابلة للضغط في الداشبورد الرئيسية */
+.clickable-card {
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.clickable-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+#limitInput{
+   width: 250px;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s;
+    margin-top: 8px;
+    
+}
+#modal-content{
+  
+  align-items: center;
+}
+#modalTitle{
+  justify-content: center;
+  display: flex;
+}
+#limitInput:hover{
+      border-color: #007BFF; /* لون عند التركيز */
+}
+#fetchUsersBtn{
+   background-color: #007BFF; /* لون أزرق */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px; /* حواف ناعمة */
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    
+}
+#checkUsers{
+  background-color: #0056b3;
+;
+
+}
+#userIdInput{
+    width: 250px;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s;
+    margin-top: 8px;
+}
+#fetchSubscriptionsBtn{
+   background-color: #007BFF; /* لون أزرق */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px; /* حواف ناعمة */
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+}
+
+.tableCellFinal{
+  padding: 0;
+}
+
+/* في ملف style.css أو styleconversation.css */
+
+/* خلفية منطقة الشات الرئيسية */
+#chat-area {
+    background-color: #1e7fff; /* اللون الأزرق الجديد */
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 60px); /* Adjust based on your header/footer height */
+    overflow: hidden;
+    position: relative; /* لتمكين التمركز */
+}
+
+/* أخفي زر الإنهاء افتراضيا */
+.end-chat-btn {
+    background-color: #dc3545; /* أحمر */
+    color: white;
+    border: none;
+    margin-left: 10px;
+    padding: 8px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.3s ease;
+}
+.end-chat-btn:hover {
+    background-color: #c82333; /* أحمر أغمق عند التمرير */
+}
+
+/* تنسيق رسالة الحالة في الـ header */
+.user-status .status {
+    font-size: 0.8em;
+    padding: 3px 8px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-top: 5px;
+}
+.user-status .status.online { /* للمحادثات النشطة */
+    background-color: #28a745; /* أخضر */
+    color: white;
+}
+.user-status .status.offline { /* للمحادثات المنتهية */
+    background-color: #6c757d; /* رمادي */
+    color: white;
+}
+
+
+/* تنسيقات الرسائل */
+
+.message {
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    border-radius: 18px;
+    max-width: 70%;
+    word-wrap: break-word;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1); /* ظل خفيف */
+    position: relative; /* لتموضع مؤشر القراءة */
+}
+
+/* رسائل المستخدم (أنا، الأدمن) - على اليمين */
+.user-message {
+    background-color: #e0eaf7; /* أزرق فاتح */
+    margin-left: auto;
+    border-bottom-right-radius: 5px;
+}
+
+/* رسائل الطرف الآخر (المستخدم، المحامي، الشركة) - على الشمال */
+.admin-message { /* تم تغييرها لتكون الرسائل المستلمة */
+    background-color: #ffffff; /* أبيض */
+    margin-right: auto;
+    border: 1px solid #e0e0e0;
+    border-bottom-left-radius: 5px;
+}
+
+/* مؤشر القراءة (صحين) */
+.message-info {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 0.75em;
+    color: #888;
+    margin-top: 5px;
+    gap: 5px;
+}
+
+.read-status .fa-check-double {
+    color: #1e7fff; /*ازرق للرسائل المقروءة */
+}
+.read-status.unread .fa-check-double {
+    color: #888; /* رمادي للرسائل غير المقروءة */
+}
+
+
+/* *** تنسيقات شريط المحادثات الجانبي الأيمن (conversation-bar) *** */
+.conversation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    background-color: white;
+}
+.conversation-header h3 {
+    margin: 0;
+    color: #333;
+}
+
+.conversation-toggle { /* زر الإغلاق (X) في الشريط الجانبي الأيمن */
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #888;
+}
+
+.search-box {
+    display: flex;
+    gap: 10px;
+    padding: 15px 10px;
+    border-bottom: 1px solid #eee;
+    background-color: white;
+}
+
+.search-box input {
+    flex-grow: 1;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    font-size: 0.9em;
+    text-align: right; /* عشان البحث يكون متوافق مع RTL */
+}
+
+.search-box .search-btn { /* زر البحث المدور الجديد */
+    background-color: #1e7fff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    flex-shrink: 0;
+}
+.search-box .search-btn:hover {
+    background-color: #0056b3;
+}
+
+
+/* زر إظهار/إخفاء المحادثات المنتهية */
+.toggle-ended-chats-btn {
+    display: block;
+    width: calc(100% - 20px);
+    margin: 10px;
+    padding: 8px; /* ارتفاع أقل */
+    background-color: #1e7fff; /* أزرق */
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9em; /* خط أصغر */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: background-color 0.3s ease;
+}
+.toggle-ended-chats-btn:hover {
+    background-color: #0056b3;
+}
+.toggle-ended-chats-btn.active-filter { /* لتحديد الحالة النشطة للزر */
+    background-color: #dc3545; /* أحمر */
+}
+.toggle-ended-chats-btn.active-filter:hover {
+    background-color: #c82333;
+}
+
+.conversation-category {
+    padding: 0 10px;
+    margin: 5px;
+}
+.conversation-category h4 {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+    font-size: 1.1em;
+}
+
+.conversation-category h4 .toggle-icon {
+    transition: transform 0.3s ease;
+    margin-right: 10px; /* للأيقونة في RTL */
+}
+
+.conversation-category h4 .toggle-icon.fa-chevron-up {
+    transform: rotate(180deg);
+}
+
+.conversation-list {
+    max-height: 500px;
+    overflow-y: auto;
+    transition: max-height 0.3s ease-out;
+}
+
+/* اجعل القوائم مغلقة افتراضياً */
+.conversation-list.collapsed {
+    max-height: 0;
+    overflow: hidden;
+}
+
+/* تنسيق الـ badge لعدد الرسائل غير المقروءة (أزرق بخط أبيض) */
+.unread-badge {
+    background-color: #1e7fff; /* أزرق */
+    color: white;
+    font-size: 0.7em;
+    padding: 3px 7px;
+    border-radius: 10px;
+    margin-left: 10px; /* مسافة عن الاسم في RTL */
+    min-width: 20px;
+    text-align: center;
+    display: none; /* مخفي افتراضيا لو العدد صفر */
+}
+
+/* مؤشر حالة المحادثة في القائمة الجانبية */
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+    margin-left: -10px;
+    flex-shrink: 0;
+}
+.status-indicator.active {
+    background-color: #28a745;
+}
+.status-indicator.inactive {
+    background-color: #6c757d;
+}
+
+/* تنسيقات عناصر المحادثة في القائمة الجانبية */
+.conversation-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    border-radius: 30px;
+    box-shadow: #0000002e 0px 1px 0px 0px;
+    transition: background-color 0.2s ease;
+}
+
+.conversation-item:hover, .conversation-item.active {
+    background-color: #e6f2ff;
+}
+
+/* إخفاء الأفاتار تماماً من عناصر المحادثة في القائمة */
+.conversation-item .avatar {
+    display: none;
+}
+.conversation-item .user-info {
+    flex-grow: 1;
+    /* مسافة عن الـ time/unread في RTL */
+    margin-left: 10px; 
+    margin-right: 0; /* تأكيد */
+}
+.conversation-item .user-info h5 {
+    margin: 0;
+    font-size: 1em;
+    color: #333;
+}
+.conversation-item .user-info p {
+    margin: 0;
+    font-size: 0.8em;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.conversation-item .time-unread {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* لـ RTL، الوقت على الشمال */
+    gap: 5px;
+    font-size: 0.8em;
+    color: #999;
+}
+
+
+/* زر فتح شريط المحادثات على الموبايل */
+.conversation-toggle.mobile-only {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px; /* في RTL، الزر على اليمين */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    z-index: 900;
+}
+@media (max-width: 768px) {
+    .conversation-toggle.mobile-only {
+        display: flex; /* يظهر على الموبايل */
+    }
+}
+
+/* الرسالة الأولية في الشات */
+.initial-message {
+    text-align: center;
+    color: #6c757d;
+    padding: 20px;
+    margin-top: 50px;
+    font-size: 1.1em;
+}
+
+/* رسالة خطأ في الـ chat-messages */
+.chat-messages .error-message {
+    color: #dc3545;
+    background-color: #f8d7da;
+    border: 1px solid #dc3545;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1em;
+}
+
+
+/* تعديلات على الـ chat-input */
+.chat-input {
+    padding: 10px 15px;
+    background-color: #f0f2f5;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chat-input input {
+    flex-grow: 1;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    padding: 10px 15px;
+    font-size: 1em;
+    text-align: right; /* ليتناسب مع RTL */
+}
+
+.chat-input button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    flex-shrink: 0;
+}
+.chat-input button:hover {
+    background-color: #0056b3;
+}
+/* Loader */
+.loading-spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #007bff; /* تقدر تغير ده للونك المفضل */
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin: 50px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* تحسين تنسيق الـ chat-input */
+.chat-input {
+    display: flex;
+    padding: 15px;
+    background-color: #f0f2f5; /* لون خلفية شريط الإدخال */
+    border-top: 1px solid #e0e0e0;
+}
+
+.chat-input input {
+    flex-grow: 1;
+    border: 1px solid #ccc;
+    border-radius: 25px; /* حواف دائرية أكثر */
+    padding: 10px 15px;
+    font-size: 1em;
+    margin-right: 10px;
+}
+
+.chat-input button {
+    background-color: #007bff; /* أزرق، أو أي لون تريده لزر الإرسال */
+    color: white;
+    border: none;
+    border-radius: 50%; /* زر دائري */
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.chat-input button:hover {
+    background-color: #0056b3;
+}
+
+/* الأنماط الأساسية لمؤشر الكتابة */
+.message.bot-message.typing {
+    display: flex;
+    align-items: center;
+    font-style: italic;
+    color: #888; /* لون خفيف */
+    padding-left: 10px; /* مسافة بسيطة عشان التأثير */
+}
+
+/* حاوية النقط المتحركة */
+.typing span {
+    animation: typing-dots 1.5s infinite; /* تطبيق التأثير، يتكرر للأبد */
+    opacity: 0; /* إخفاء النقط في البداية */
+    margin-left: 2px; /* مسافة بين النقط */
+}
+
+/* تأخير ظهور كل نقطة لإعطاء تأثير الكتابة */
+.typing span:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.typing span:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.typing span:nth-child(3) {
+    animation-delay: 0.5s;
+}
+
+/* تعريف الـ Keyframes للحركة */
+@keyframes typing-dots {
+    0%, 20% {
+        opacity: 0;
+    }
+    40% {
+        opacity: 1;
+    }
+    80%, 100% {
+        opacity: 0;
+    }
+}
