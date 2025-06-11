@@ -4,20 +4,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const statsGrid = document.getElementById('statsGrid');
     const dashboardApiUrl = 'https://enabled-early-vulture.ngrok-free.app/admin/dashboard/stats';
 
-    // عناصر الـ Modal
+    // Modal elements
     const dataModal = document.getElementById('dataModal');
     const modalTitle = document.getElementById('modalTitle');
     const modalControls = document.getElementById('modalControls');
     const modalBody = document.getElementById('modalBody');
     const closeButton = document.querySelector('.close-button');
 
-    // URLs للـ APIs التفصيلية
+    // Detailed APIs URLs
     const revenueApiUrl = 'https://enabled-early-vulture.ngrok-free.app/admin/revenue';
-    const usersApiBaseUrl = 'https://enabled-early-vulture.ngrok-free.app/admin/users';
+    const usersApiBaseUrl = 'https://enabled-early-vulture.ngrok-free.app/admin/users'; // هذا الـ API سيعود بكل أنواع الحسابات، وسنقوم بالفلترة في الـ frontend
     const subscriptionsApiBaseUrl = 'https://enabled-early-vulture.ngrok-free.app/admin/subscriptions';
-    const subscriptionByIdApiBaseUrl = 'https://enabled-early-vulture.ngrok-free.app/admin/'; // هنضيف user_id/subscription ليها
+    const subscriptionByIdApiBaseUrl = 'https://enabled-early-vulture.ngrok-free.app/admin/'; // We'll append user_id/subscription to it
 
-    // دالة لجلب البيانات وعرضها (زي ما هي)
+    // Function to fetch and display dashboard stats
     async function fetchAndDisplayDashboardStats() {
         const accessToken = localStorage.getItem('accessToken');
         const tokenType = localStorage.getItem('tokenType');
@@ -56,18 +56,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // دالة لعرض البيانات في الكروت (هنضيف عليها event listeners)
+    // Function to display data in cards
     function displayStats(stats) {
         removeSkeletonCards();
         statsGrid.innerHTML = '';
 
         const statItems = [
-            { label: 'إجمالي الحسابات', key: 'total_accounts', icon: 'fas fa-users', action: 'showUsers' }, // إضافة action
-            { label: 'إجمالي المستخدمين', key: 'total_users', icon: 'fas fa-user' }, 
-            { label: 'إجمالي المحامين', key: 'total_lawyers', icon: 'fas fa-gavel' },
-            { label: 'إجمالي الشركات', key: 'total_companies', icon: 'fas fa-building' },
-            { label: 'الاشتراكات النشطة', key: 'total_active_subscriptions', icon: 'fas fa-credit-card', action: 'showSubscriptions' }, // إضافة action
-            { label: 'إجمالي الإيرادات', key: 'total_revenue', icon: 'fas fa-dollar-sign', isCurrency: true, action: 'showRevenue' }, // إضافة action
+            { label: 'إجمالي الحسابات', key: 'total_accounts', icon: 'fas fa-users', action: 'showAllAccounts' },
+            { label: 'إجمالي المستخدمين', key: 'total_users', icon: 'fas fa-user', action: 'showOnlyUsers' }, // إضافة action
+            { label: 'إجمالي المحامين', key: 'total_lawyers', icon: 'fas fa-gavel', action: 'showOnlyLawyers' }, // إضافة action
+            { label: 'إجمالي الشركات', key: 'total_companies', icon: 'fas fa-building', action: 'showOnlyCompanies' }, // إضافة action
+            { label: 'المشتركون النشطون', key: 'total_active_subscriptions', icon: 'fas fa-user-check', action: 'showActiveSubscriptions' },
+            { label: 'إجمالي الاشتراكات', key: 'total_subscriptions', icon: 'fas fa-credit-card', action: 'showAllSubscriptions' },
+            { label: 'إجمالي الإيرادات', key: 'total_revenue', icon: 'fas fa-dollar-sign', isCurrency: true, action: 'showRevenue' },
             { label: 'الإيرادات الشهرية', key: 'monthly_revenue', icon: 'fas fa-money-bill-wave', isCurrency: true },
             { label: 'المحادثات النشطة', key: 'active_chats', icon: 'fas fa-comments' },
             { label: 'إجمالي الرسائل', key: 'total_messages', icon: 'fas fa-envelope' },
@@ -84,34 +85,45 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="stat-label">${item.label}</div>
                 <div class="stat-value">${formattedValue}</div>
             `;
-            // إضافة Event Listener إذا كان الكارت له action
             if (item.action) {
-                card.classList.add('clickable-card'); // عشان نضيف عليها تنسيق خاص
+                card.classList.add('clickable-card');
                 card.addEventListener('click', () => handleCardClick(item.action));
             }
             statsGrid.appendChild(card);
         });
     }
 
-    // دالة للتعامل مع ضغطات الكروت
+    // Function to handle card clicks
     async function handleCardClick(action) {
-        modalControls.innerHTML = ''; // تفريغ عناصر التحكم
-        modalBody.innerHTML = '<div class="loading-spinner"></div>'; // عرض Spinner للتحميل
-        dataModal.style.display = 'block'; // فتح الـ Modal
+        modalControls.innerHTML = '';
+        modalBody.innerHTML = '<div class="loading-spinner"></div>';
+        dataModal.style.display = 'block';
 
         if (action === 'showRevenue') {
             modalTitle.textContent = 'تفاصيل الإيرادات';
             await fetchAndDisplayRevenue();
-        } else if (action === 'showUsers') {
+        } else if (action === 'showAllAccounts') {
+            modalTitle.textContent = 'تفاصيل جميع الحسابات';
+            await promptForSpecificUsersOrAll('all'); // 'all' indicates no specific role filter
+        } else if (action === 'showOnlyUsers') {
             modalTitle.textContent = 'تفاصيل المستخدمين';
-            await promptForLimitAndFetchUsers();
-        } else if (action === 'showSubscriptions') {
-            modalTitle.textContent = 'تفاصيل الاشتراكات';
-            await promptForUserIdOrAllSubscriptions();
+            await promptForSpecificUsersOrAll('user'); // 'user' to filter for users
+        } else if (action === 'showOnlyLawyers') {
+            modalTitle.textContent = 'تفاصيل المحامين';
+            await promptForSpecificUsersOrAll('lawyer'); // 'lawyer' to filter for lawyers
+        } else if (action === 'showOnlyCompanies') {
+            modalTitle.textContent = 'تفاصيل الشركات';
+            await promptForSpecificUsersOrAll('company'); // 'company' to filter for companies
+        } else if (action === 'showAllSubscriptions') {
+            modalTitle.textContent = 'تفاصيل إجمالي الاشتراكات';
+            await promptForUserIdOrAllSubscriptions(false);
+        } else if (action === 'showActiveSubscriptions') {
+            modalTitle.textContent = 'تفاصيل المشتركين النشطين';
+            await promptForUserIdOrAllSubscriptions(true);
         }
     }
 
-    // --- دوال خاصة بجلب وعرض البيانات التفصيلية ---
+    // --- Detailed data fetching and display functions ---
 
     async function fetchData(url) {
         const accessToken = localStorage.getItem('accessToken');
@@ -137,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // عرض الإيرادات
+    // Display Revenue (as is)
     async function fetchAndDisplayRevenue() {
         modalBody.innerHTML = '<div class="loading-spinner"></div>';
         const revenueData = await fetchData(revenueApiUrl);
@@ -153,28 +165,75 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // عرض المستخدمين
-    async function promptForLimitAndFetchUsers() {
+    // New unified function to prompt for specific user type ID or display all of that type
+    async function promptForSpecificUsersOrAll(userType = 'all') { // userType can be 'all', 'user', 'lawyer', 'company'
+        let promptText = '';
+        let modalTitleText = '';
+        let idKey = ''; // Key for the ID field (e.g., user_id, lawyer_id, company_id)
+
+        switch (userType) {
+            case 'user':
+                promptText = 'أدخل معرف المستخدم للبحث أو اترك الحقل فارغاً لعرض كل المستخدمين:';
+                modalTitleText = 'تفاصيل المستخدمين';
+                idKey = 'user_id';
+                break;
+            case 'lawyer':
+                promptText = 'أدخل معرف المحامي للبحث أو اترك الحقل فارغاً لعرض كل المحامين:';
+                modalTitleText = 'تفاصيل المحامين';
+                idKey = 'lawyer_id';
+                break;
+            case 'company':
+                promptText = 'أدخل معرف الشركة للبحث أو اترك الحقل فارغاً لعرض كل الشركات:';
+                modalTitleText = 'تفاصيل الشركات';
+                idKey = 'company_id';
+                break;
+            case 'all':
+            default:
+                promptText = 'أدخل معرف الحساب (ID) للبحث أو اترك الحقل فارغاً لعرض كل الحسابات:';
+                modalTitleText = 'تفاصيل جميع الحسابات';
+                idKey = 'user_id'; // Default to user_id for generic accounts
+                break;
+        }
+
+        modalTitle.textContent = modalTitleText;
         modalBody.innerHTML = `
-            <p>هل تريد تحديد عدد المستخدمين المعروضين؟</p>
-            <input type="number" id="limitInput" placeholder="أدخل العدد (اختياري)">
+            <p>${promptText}</p>
+            <input type="text" id="limitInput" placeholder="أدخل المعرف (اختياري)">
             <button id="fetchUsersBtn">عرض</button>
         `;
-        const fetchUsersBtn = document.getElementById('fetchUsersBtn');
-        fetchUsersBtn.onclick = async () => {
-            const limit = document.getElementById('limitInput').value;
-            const url = limit ? `${usersApiBaseUrl}?skip=0&limit=${limit}` : usersApiBaseUrl;
+
+        const fetchBtn = document.getElementById('fetchUsersBtn');
+        fetchBtn.onclick = async () => {
+            const searchId = document.getElementById('limitInput').value.trim();
             modalBody.innerHTML = '<div class="loading-spinner"></div>';
-            const usersData = await fetchData(url);
-            if (usersData) {
-                displayListInModal(usersData, 'المستخدمون', (item) => `
+
+            const allUsersData = await fetchData(usersApiBaseUrl); // Fetch all data from the common users API
+
+            if (allUsersData) {
+                let dataToShow = allUsersData;
+
+                // Filter by role if a specific userType is requested (not 'all')
+                if (userType !== 'all') {
+                    dataToShow = dataToShow.filter(item => item.role && item.role.toLowerCase() === userType);
+                }
+
+                // Filter by ID if searchId is provided
+                if (searchId) {
+                    dataToShow = dataToShow.filter(item => item[idKey] && item[idKey].toString() === searchId);
+                    if (dataToShow.length === 0) {
+                        modalBody.innerHTML = `<div class="info-message">لا توجد ${modalTitleText.replace('تفاصيل', '').trim()} مطابقة لـ ID: ${searchId}.</div>`;
+                        return;
+                    }
+                }
+
+                displayListInModal(dataToShow, modalTitleText, (item) => `
                     <div class="list-item-card">
-                        <p><strong>معرف المستخدم:</strong> ${item.user_id}</p>
-                        <p><strong>البريد الإلكتروني:</strong> ${item.email}</p>
-                        <p><strong>الدور:</strong> ${item.role}</p>
+                        <p><strong>معرف الحساب:</strong> ${item.user_id || item.lawyer_id || item.company_id || 'N/A'}</p>
+                        <p><strong>البريد الإلكتروني:</strong> ${item.email || 'N/A'}</p>
+                        <p><strong>الدور:</strong> ${item.role || 'N/A'}</p>
                         <p><strong>حالة الاشتراك:</strong> ${item.subscription_status || 'لا يوجد'}</p>
                         <p><strong>تاريخ انتهاء الاشتراك:</strong> ${item.subscription_end_date ? new Date(item.subscription_end_date).toLocaleDateString('ar-EG') : 'لا يوجد'}</p>
-                        <p><strong>إجمالي الرسائل:</strong> ${item.total_messages}</p>
+                        <p><strong>إجمالي الرسائل:</strong> ${item.total_messages || 'N/A'}</p>
                         <p><strong>الرسائل المتبقية:</strong> ${item.remaining_messages || 'لا يوجد'}</p>
                         <p><strong>تاريخ الإنشاء:</strong> ${new Date(item.created_at).toLocaleDateString('ar-EG')}</p>
                     </div>
@@ -183,30 +242,44 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // عرض الاشتراكات (سواء لـ ID معين أو كلها)
-    async function promptForUserIdOrAllSubscriptions() {
+    // Display Subscriptions (either by user ID or all, with active filter)
+    async function promptForUserIdOrAllSubscriptions(activeOnly = false) {
+        let titlePrompt = activeOnly ? 'أدخل معرف المستخدم لعرض اشتراكاته النشطة أو اترك الحقل فارغاً لعرض كل الاشتراكات النشطة:' : 'أدخل معرف المستخدم لعرض اشتراكاته أو اترك الحقل فارغاً لعرض كل الاشتراكات:';
         modalBody.innerHTML = `
-            <p>أدخل معرف المستخدم لعرض اشتراكاته أو اترك الحقل فارغاً لعرض كل الاشتراكات:</p>
+            <p>${titlePrompt}</p>
             <input type="number" id="userIdInput" placeholder="معرف المستخدم (اختياري)">
             <button id="fetchSubscriptionsBtn">عرض</button>
         `;
         const fetchSubscriptionsBtn = document.getElementById('fetchSubscriptionsBtn');
         fetchSubscriptionsBtn.onclick = async () => {
             const userId = document.getElementById('userIdInput').value;
-            let url;
-            if (userId) {
-                url = `${subscriptionByIdApiBaseUrl}${userId}/subscription`; // API لعرض اشتراك مستخدم واحد
-            } else {
-                url = `${subscriptionsApiBaseUrl}?skip=0&limit=100`; // API لعرض كل الاشتراكات (ممكن تزود الـ limit)
-            }
-            modalBody.innerHTML = '<div class="loading-spinner"></div>';
-            const subscriptionsData = await fetchData(url);
+            let subscriptionsData;
 
+            modalBody.innerHTML = '<div class="loading-spinner"></div>';
+
+            if (userId) {
+                // If a user ID is provided, fetch specific user subscription(s)
+                const url = `${subscriptionByIdApiBaseUrl}${userId}/subscription`;
+                subscriptionsData = await fetchData(url);
+                // Ensure subscriptionsData is an array for displayListInModal
+                subscriptionsData = Array.isArray(subscriptionsData) ? subscriptionsData : (subscriptionsData ? [subscriptionsData] : []);
+            } else {
+                // If no user ID, fetch all subscriptions
+                const url = `${subscriptionsApiBaseUrl}?skip=0&limit=200`; // Increased limit to fetch more subscriptions
+                subscriptionsData = await fetchData(url);
+                subscriptionsData = Array.isArray(subscriptionsData) ? subscriptionsData : []; // Ensure it's an array
+            }
+            
             if (subscriptionsData) {
-                // لو بيرجع أوبجيكت واحد (اشتراك مستخدم واحد) حوله لـ array عشان displayListInModal تشتغل صح
-                const dataToShow = Array.isArray(subscriptionsData) ? subscriptionsData : [subscriptionsData];
-                
-                displayListInModal(dataToShow, 'الاشتراكات', (item) => `
+                let dataToShow = subscriptionsData;
+
+                if (activeOnly) {
+                    // Filter for active subscriptions if activeOnly is true
+                    dataToShow = dataToShow.filter(sub => sub.status && sub.status.toLowerCase() === 'active');
+                }
+
+                const title = activeOnly ? 'الاشتراكات النشطة' : 'إجمالي الاشتراكات';
+                displayListInModal(dataToShow, title, (item) => `
                     <div class="list-item-card">
                         <p><strong>معرف الاشتراك:</strong> ${item.sub_id}</p>
                         <p><strong>معرف المستخدم:</strong> ${item.user_id}</p>
@@ -221,11 +294,10 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-
-    // دالة مساعدة لعرض البيانات في شكل قائمة من الكروت داخل الـ Modal
+    // Helper function to display data as a list of cards inside the modal
     function displayListInModal(data, title, itemFormatter) {
         modalTitle.textContent = title;
-        modalBody.innerHTML = ''; // تفريغ المحتوى
+        modalBody.innerHTML = ''; // Clear content
         if (data && data.length > 0) {
             data.forEach(item => {
                 const itemHtml = itemFormatter(item);
@@ -236,18 +308,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // دالة لعرض رسالة خطأ (زي ما هي)
+    // Function to display an error message
     function displayErrorMessage(message) {
         statsGrid.innerHTML = `<div class="error-message">${message}</div>`;
     }
 
-    // دالة لإزالة الكروت الهيكلية (زي ما هي)
+    // Function to remove skeleton cards
     function removeSkeletonCards() {
         const skeletons = document.querySelectorAll('.skeleton-card');
         skeletons.forEach(skeleton => skeleton.remove());
     }
 
-    // --- ربط أحداث الـ Modal ---
+    // --- Modal event binding ---
     closeButton.addEventListener('click', () => {
         dataModal.style.display = 'none';
     });
@@ -258,6 +330,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // استدعاء الدالة عند تحميل الصفحة
+    // Call the function on page load
     fetchAndDisplayDashboardStats();
 });
