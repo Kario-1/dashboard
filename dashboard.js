@@ -275,7 +275,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (activeOnly) {
                     // Filter for active subscriptions if activeOnly is true
-                    dataToShow = dataToShow.filter(sub => sub.status && sub.status.toLowerCase() === 'active');
+                    dataToShow = dataToShow.filter(sub => 
+                        sub.status && sub.status.toLowerCase() === 'active' && 
+                        new Date(sub.end_date) > new Date()
+                    );
                 }
 
                 const title = activeOnly ? 'الاشتراكات النشطة' : 'إجمالي الاشتراكات';
