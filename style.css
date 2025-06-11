@@ -181,7 +181,7 @@ main {
 .chat-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 85vh;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   overflow: hidden;
