@@ -78,7 +78,6 @@
         <section id="orders" class="content-section active">
           <h2><i class="fas fa-box"></i> قائمة الطلبات</h2>
 
-          <!-- Filter controls -->
           <div id="filter-container">
             <input
               type="text"
@@ -92,12 +91,12 @@
               aria-label="تصفية حسب الحالة"
             >
               <option value="all">الكل</option>
-              <option value="pending">pending</option>
-              <option value="approved">approved</option>
-              <option value="rejected">rejected</option>
-              <option value="in_progress">in progress</option>
-              <option value="completed">completed</option>
-              <option value="failed">failed</option>
+              <option value="pending">معلق</option>
+              <option value="approved">تمت الموافقة</option>
+              <option value="rejected">مرفوض</option>
+              <option value="in_progress">قيد التنفيذ</option>
+              <option value="completed">مكتمل</option>
+              <option value="failed">فشل</option>
             </select>
           </div>
 
@@ -144,6 +143,7 @@
       let ordersData = [];
       let filteredData = [];
 
+      // تم تعديل هذا الجزء لترجمة الحالات
       const statusOptions = [
         'pending',
         'approved',
@@ -152,6 +152,26 @@
         'completed',
         'failed',
       ];
+
+      // دالة لترجمة حالة الطلب
+      function formatStatus(status) {
+        switch (status) {
+          case 'pending':
+            return 'معلق';
+          case 'approved':
+            return 'تمت الموافقة';
+          case 'rejected':
+            return 'مرفوض';
+          case 'in_progress':
+            return 'قيد التنفيذ';
+          case 'completed':
+            return 'مكتمل';
+          case 'failed':
+            return 'فشل';
+          default:
+            return status;
+        }
+      }
 
       async function fetchOrders() {
         try {
@@ -199,8 +219,7 @@
             <td class="description-cell" tabindex="0" role="button" title="اضغط لعرض الوصف الكامل">${
               order.description || ''
             }</td>
-            <td class="status-cell">${order.status || ''}</td>
-            <td>${formatDate(order.created_at)}</td>
+            <td class="status-cell">${formatStatus(order.status || '')}</td> <td>${formatDate(order.created_at)}</td>
             <td>${formatDate(order.completed_at)}</td>
             <td>${formatDate(order.updated_at)}</td>
             <td>
@@ -212,7 +231,7 @@
                     (status) =>
                       `<option value="${status}" ${
                         status === order.status ? 'selected' : ''
-                      }>${status.replace('_', ' ')}</option>`
+                      }>${formatStatus(status)}</option>` // تطبيق الترجمة هنا أيضًا
                   )
                   .join('')}
               </select>
@@ -287,9 +306,13 @@
         try {
           document.body.style.cursor = 'wait';
 
+          // الحصول على التعليق الحالي للطلب قبل التحديث
+          const currentOrder = ordersData.find(o => o.order_id.toString() === orderId.toString());
+          const currentAdminNotes = currentOrder ? currentOrder.admin_notes : '';
+
           const url = `https://enabled-early-vulture.ngrok-free.app/model/orders/${orderId}/status?status=${encodeURIComponent(
             status
-          )}`;
+          )}&admin_notes=${encodeURIComponent(currentAdminNotes)}`; // إرسال التعليق الحالي مع الحالة
 
           const response = await fetch(url, {
             method: 'PUT',
@@ -302,7 +325,8 @@
           });
 
           if (!response.ok) {
-            throw new Error('فشل في تحديث حالة الطلب');
+            const errorText = await response.text();
+            throw new Error(`فشل في تحديث حالة الطلب: ${response.status} - ${errorText.substring(0, 100)}...`);
           }
 
           alert('تم تحديث الحالة بنجاح');
@@ -338,7 +362,8 @@
           });
 
           if (!response.ok) {
-            throw new Error('فشل في تحديث تعليق المسؤول');
+            const errorText = await response.text();
+            throw new Error(`فشل في تحديث تعليق المسؤول: ${response.status} - ${errorText.substring(0, 100)}...`);
           }
           alert('تم تحديث التعليق بنجاح');
           await fetchOrders();
@@ -383,7 +408,7 @@
       statusFilter.addEventListener('change', applyFilters);
 
       function applyFilters() {
-        const searchTerm = searchInput.value.trim();
+        const searchTerm = searchInput.value.trim().toLowerCase();
         const statusTerm = statusFilter.value;
 
         filteredData = ordersData.filter((order) => {
@@ -399,8 +424,9 @@
         renderTable(filteredData);
       }
 
-      fetchOrders();
+      // استدعاء جلب البيانات عند تحميل الصفحة لأول مرة
+      document.addEventListener('DOMContentLoaded', fetchOrders);
     </script>
-    <script src="script.js"></script> 
+    <script src="script.js"></script>
   </body>
 </html>
